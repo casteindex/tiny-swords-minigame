@@ -5,6 +5,16 @@ const int TILE_SIZE = 32;
 const int MAP_WIDTH = 10;
 const int MAP_HEIGHT = 10;
 
+// --- VARIABLES DE ANIMACIÓN ---
+const int FRAME_WIDTH = 192;
+const int FRAME_HEIGHT = 192;
+const int FRAME_COUNT = 6;          // 6 columnas
+const float FRAME_DURATION = 0.1f;  // 100 ms por frame
+
+int currentFrame = 0;
+float animationTimer = 0.f;
+bool isMoving = false;
+
 // Un mapa simple con IDs de tiles
 // clang-format off
 int mapData[MAP_HEIGHT][MAP_WIDTH] = {
@@ -19,22 +29,22 @@ int mapData[MAP_HEIGHT][MAP_WIDTH] = {
   {0,0,0,1,1,1,1,0,0,0},
   {0,0,0,0,0,0,0,0,0,0}
 };
-// clang-format off
+// clang-format on
 
 int main() {
   sf::RenderWindow window(sf::VideoMode({640, 480}), "Mini RPG - Base");
   window.setFramerateLimit(60);
 
-  // === TILESET ===
+  // ==== TILESET ====
   sf::Texture tileset;
   if (!tileset.loadFromFile("assets/tileset.png")) {
     return -1;
   }
 
-  // Calculamos cuántos tiles por fila tiene el tileset
+  // Cálculo de tiles por fila en el tileset
   const int tilesPerRow = tileset.getSize().x / TILE_SIZE;
 
-  // === MAPA: ahora con Triangles (6 vértices por tile) ===
+  // ==== MAPA: ahora con Triangles (6 vértices por tile) ====
   sf::VertexArray map(sf::PrimitiveType::Triangles, MAP_WIDTH * MAP_HEIGHT * 6);
 
   for (int i = 0; i < MAP_HEIGHT; ++i) {
@@ -76,17 +86,17 @@ int main() {
     }
   }
 
-  // === PLAYER ===
+  // ==== PLAYER ====
   sf::Texture playerTexture;
   if (!playerTexture.loadFromFile("assets/player.png")) {
     return -1;
   }
 
-  // Nota: en SFML 3 no hay constructor por defecto para Sprite,
-  // así que construimos con la textura:
   sf::Sprite player(playerTexture);
   player.setPosition({100.f, 100.f});
   player.setScale({1.0f, 1.0f});
+  player.setTextureRect(sf::IntRect({0, 0}, {FRAME_WIDTH, FRAME_HEIGHT}));
+  player.setOrigin({0.f, 0.f});
 
   float speed = 100.f;  // píxeles por segundo
   sf::Clock clock;
@@ -116,17 +126,30 @@ int main() {
       movement.x += speed * dt;
       movingRight = true;
     }
+    isMoving = (movement.x != 0.f || movement.y != 0.f);
 
-    // Aplicar espejo según dirección
+    // ==== ANIMACIÓN ====
+    animationTimer += dt;
+    if (animationTimer >= FRAME_DURATION) {
+      animationTimer = 0.f;
+
+      // Si se mueve usar fila 1 (walk), si no, fila 0 (idle)
+      int row = isMoving ? 1 : 0;
+      currentFrame = (currentFrame + 1) % FRAME_COUNT;
+
+      player.setTextureRect(
+          sf::IntRect({currentFrame * FRAME_WIDTH, row * FRAME_HEIGHT},
+              {FRAME_WIDTH, FRAME_HEIGHT}));
+    }
+
+    // Aplicar mirror según dirección
     if (movingLeft) {
-      // usamos getLocalBounds().size.x (SFML 3: Rect tiene position y size)
       float w = player.getLocalBounds().size.x;
-      player.setOrigin({w, 0.f});  // setOrigin espera Vector2f
-      player.setScale({-1.f, 1.f});
+      player.setOrigin({w, 0.f});    // setOrigin espera Vector2f
+      player.setScale({-1.f, 1.f});  // hace mirror a la textura
     } else if (movingRight) {
-      // origen normal
       player.setOrigin({0.f, 0.f});
-      player.setScale({1.f, 1.f});
+      player.setScale({1.f, 1.f});  // revierte el mirror (normal)
     }
 
     player.move(movement);
