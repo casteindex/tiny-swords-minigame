@@ -129,11 +129,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CalderoScene.cpp" />
+    <ClCompile Include="EscenaEspada.cpp" />
+    <ClCompile Include="Jugador.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Pregunta.cpp" />
     <ClCompile Include="Ruleta.cpp" />
+    <ClCompile Include="RuletaScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assets.h" />
+    <ClInclude Include="CalderoScene.h" />
+    <ClInclude Include="EspadaScene.h" />
+    <ClInclude Include="Jugador.h" />
+    <ClInclude Include="Pregunta.h" />
+    <ClInclude Include="ColasPreguntas.h" />
     <ClInclude Include="Ruleta.h" />
+    <ClInclude Include="RuletaScene.h" />
+    <ClInclude Include="Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

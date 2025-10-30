@@ -1,107 +1,90 @@
-#include "Ruleta.h"
+Ôªø#include "Ruleta.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 
-using namespace std;
+using namespace sf;
 
-Ruleta::Ruleta(sf::RenderWindow& windowRef)
-    : window(windowRef), indiceActual(0), seleccionFinal(-1), timer(0.f),
-      activa(false), tiempoEntreCambios(0.05f), factorDesaceleracion(1.f) {
-  srand(static_cast<unsigned int>(time(0)));
+Ruleta::Ruleta(sf::RenderWindow& windowRef, Vector2f pos)
+    : window(windowRef), posicion(pos), angulo(0.f), velocidadAngular(0.f),
+      desaceleracion(0.f), girando(false), categoriaSeleccionada(-1) {
+  // Inicializar random
+  std::srand(static_cast<unsigned int>(std::time(0)));
 
-  nombresPergaminos = {"pergamino-fuego.png", "pergamino-hielo.png",
-      "pergamino-planta.png", "pergamino-tierra.png"};
+  // Textura de la ruleta
+  if (!texturaRuleta.loadFromFile("assets/objects/ruleta.png"))
+    std::cerr << "No se pudo cargar ruleta.png\n";
 
-  // Cargar texturas
-  for (auto& nombre : nombresPergaminos) {
-    sf::Texture tex;
-    if (!tex.loadFromFile("assets/" + nombre)) {
-      cerr << "Error al cargar " << nombre << endl;
-    } else {
-      pergaminos.push_back(tex);
-    }
-  }
+  // Crear sprite
+  spriteRuleta = std::make_unique<Sprite>(texturaRuleta);
+  // Pasar el origen al centro de la imagen
+  spriteRuleta->setOrigin(
+      {texturaRuleta.getSize().x / 2.f, texturaRuleta.getSize().y / 2.f});
+  spriteRuleta->setPosition(posicion);
 
-  // Crear el sprite con make_unique
-  pergaminoActual = make_unique<sf::Sprite>(pergaminos[0]);
-  pergaminoActual->setOrigin(
-      {pergaminos[0].getSize().x / 2.f, pergaminos[0].getSize().y / 2.f});
-  pergaminoActual->setPosition(
-      {window.getSize().x / 2.f, window.getSize().y / 2.f});
+  // Categor√≠as
+  nombresCategorias = {"Arte", "Pol√≠tica", "Ciencia", "Historia"};
+
+  // Fuente
+  if (!fuente.openFromFile("assets/fonts/Jacquard24-Regular.ttf"))
+    std::cerr << "No se pudo cargar Jacquard24-Regular.ttf\n";
 }
 
-bool Ruleta::isActive() const {
-  return activa;
+void Ruleta::iniciarGiro() {
+  if (girando || nombresCategorias.empty()) return;
+  girando = true;
+  velocidadAngular = 720.f;
+  desaceleracion = 300.f;
+  categoriaSeleccionada = -1;
 }
 
 void Ruleta::actualizar(float dt) {
-  if (!activa) return;
+  if (!girando) return;
 
-  // Incrementar el timer
-  timer += dt * factorDesaceleracion;
+  // Girar
+  angulo += velocidadAngular * dt;
+  spriteRuleta->setRotation(sf::degrees(angulo));
 
-  // Cambiar pergamino seg˙n tiempo
-  if (timer >= tiempoEntreCambios) {
-    timer = 0.f;
-    indiceActual = (indiceActual + 1) % pergaminos.size();
-    pergaminoActual->setTexture(pergaminos[indiceActual]);
-    pergaminoActual->setOrigin({pergaminos[indiceActual].getSize().x / 2.f,
-        pergaminos[indiceActual].getSize().y / 2.f});
-    pergaminoActual->setPosition(
-        {window.getSize().x / 2.f, window.getSize().y / 2.f});
+  // Desacelerar
+  velocidadAngular -= desaceleracion * dt;
+  if (velocidadAngular <= 0.f) {
+    velocidadAngular = 0.f;
+    girando = false;
 
-    // Reducir velocidad (desaceleraciÛn)
-    factorDesaceleracion *= 0.95f;
+    // Elegir categor√≠a final (hard coded por sectores)
+    int idx = int(fmod(angulo, 360.f) / 90.f);  // 4 sectores de 90¬∞
+    categoriaSeleccionada = 3 - idx;            // invertir sentido
 
-    // Cuando la ruleta se detiene lo suficiente
-    if (factorDesaceleracion < 0.1f) {
-      activa = false;
-      seleccionFinal = indiceActual;
-      cout << "Pergamino seleccionado: " << nombresPergaminos[seleccionFinal]
-           << "\n";
-
-      // Eliminar de la lista de pergaminos para prÛximas veces
-      pergaminos.erase(pergaminos.begin() + seleccionFinal);
-      nombresPergaminos.erase(nombresPergaminos.begin() + seleccionFinal);
-
-      // Resetear valores para la prÛxima ruleta
-      indiceActual = 0;
-      factorDesaceleracion = 1.f;
-    }
+    std::cout << "Categor√≠a elegida: "
+              << nombresCategorias[categoriaSeleccionada] << "\n";
   }
 }
 
 void Ruleta::dibujar() {
-  if (!activa) return;
+  if (spriteRuleta) window.draw(*spriteRuleta);
+  Text texto(fuente);
+  texto.setCharacterSize(28);
+  texto.setFillColor(Color::Yellow);
+  texto.setOutlineThickness(1.0f);
 
-  // Fondo semi-transparente
-  sf::RectangleShape fondo(
-      {(float)window.getSize().x, (float)window.getSize().y});
-  fondo.setFillColor(sf::Color(0, 0, 0, 150));
-  window.draw(fondo);
+  if (!girando) {
+    // instrucci√≥n
+    texto.setString("Presiona ESPACIO para girar");
+    texto.setPosition({posicion.x - 100.f, posicion.y + 250.f});
+    window.draw(texto);
 
-  // Dibujar pergamino actual
-  window.draw(*pergaminoActual);
+    // mostrar categor√≠a seleccionada
+    if (categoriaSeleccionada != -1) {
+      texto.setString("Tu destino te lleva hacia el reino de " +
+                      nombresCategorias[categoriaSeleccionada]);
+      texto.setPosition({posicion.x - 200.f, posicion.y + 300.f});
+      window.draw(texto);
+    }
+  }
 }
 
-void Ruleta::activar() {
-  if (pergaminos.empty()) {
-    cout << "No hay pergaminos disponibles.\n";
-    return;
-  }
-
-  activa = true;
-  // Elegir un Ìndice inicial aleatorio
-  indiceActual = rand() % pergaminos.size();
-  pergaminoActual->setTexture(pergaminos[indiceActual]);
-  pergaminoActual->setOrigin({pergaminos[indiceActual].getSize().x / 2.f,
-      pergaminos[indiceActual].getSize().y / 2.f});
-  pergaminoActual->setPosition(
-      {window.getSize().x / 2.f, window.getSize().y / 2.f});
-
-  // Resetear desaceleraciÛn
-  factorDesaceleracion = 1.f;
-  timer = 0.f;
+bool Ruleta::estaGirando() const {
+  return girando;
 }

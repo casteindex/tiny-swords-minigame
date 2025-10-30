@@ -1,29 +1,33 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class Ruleta {
- public:
-  Ruleta(sf::RenderWindow& windowRef);
+ private:
+  sf::RenderWindow& window;
+  sf::Vector2f posicion;
 
-  bool isActive() const;
-  void activar();
+  std::unique_ptr<sf::Sprite> spriteRuleta;
+  sf::Texture texturaRuleta;
+
+  std::vector<std::string> nombresCategorias;
+
+  float angulo;
+  float velocidadAngular;
+  float desaceleracion;
+  bool girando;
+  int categoriaSeleccionada;
+
+  sf::Font fuente;
+
+ public:
+  Ruleta(sf::RenderWindow& windowRef, sf::Vector2f pos);
+
+  void iniciarGiro();
   void actualizar(float dt);
   void dibujar();
 
- private:
-  sf::RenderWindow& window;
-  vector<string> nombresPergaminos;
-  vector<sf::Texture> pergaminos;
-  unique_ptr<sf::Sprite> pergaminoActual;
-
-  int indiceActual;
-  int seleccionFinal;
-  float timer;
-  bool activa;
-  float tiempoEntreCambios;
-  float factorDesaceleracion;
+  bool estaGirando() const;
 };
