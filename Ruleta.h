@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <memory>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -9,7 +12,7 @@ class Ruleta {
   sf::RenderWindow& window;
   sf::Vector2f posicion;
 
-  std::unique_ptr<sf::Sprite> spriteRuleta;
+  sf::Sprite* spriteRuleta;
   sf::Texture texturaRuleta;
 
   std::vector<std::string> nombresCategorias;
@@ -23,11 +26,16 @@ class Ruleta {
   sf::Font fuente;
 
  public:
-  Ruleta(sf::RenderWindow& windowRef, sf::Vector2f pos);
+  Ruleta(sf::RenderWindow& windowRef, std::vector<std::string> categorias,
+      sf::Vector2f pos);
+  ~Ruleta();
 
   void iniciarGiro();
   void actualizar(float dt);
   void dibujar();
 
   bool estaGirando() const;
+  bool haTerminado() const;
+  std::vector<std::string> getCategorias() const;
+  std::string getCategoriaSeleccionada() const;
 };

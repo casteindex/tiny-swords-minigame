@@ -1,27 +1,59 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <memory>
+#include <iostream>
+#include <queue>
+#include <vector>
 
+#include "Pregunta.h"
+#include "RuletaScene.h"
 #include "Scene.h"
 
 class CalderoScene : public Scene {
- public:
-  CalderoScene(sf::RenderWindow& window);
-
-  void handleInput(float dt);
-  void update(float dt);
-  void draw(sf::RenderWindow& window);
-
  private:
+  int& vidasJugador;
+  std::vector<std::string> categoriasRestantes;
+
   sf::Texture texFondo;
   sf::Texture texCaldero;
-  std::unique_ptr<sf::Sprite> spriteFondo;
-  std::unique_ptr<sf::Sprite> spriteCaldero;
+  sf::Sprite* spriteFondo;
+  sf::Sprite* spriteCaldero;
+  sf::Font fuente;
 
-  float tiempoAcumulado = 0.f;
-  int frameActual = 0;
-  const int totalFrames = 4;
-  const float duracionFrame = 0.25f;  // segundos entre frames
+  std::queue<Pregunta> colaPreguntas;
+  Pregunta* preguntaActualPtr;
 
-  bool terminado = false;
+  int totalPreguntasIniciales;
+  int respuestasCorrectas;
+  bool terminado;
+  bool gano;
+  bool keyLocked;
+
+  // Animación
+  static const int FRAME_WIDTH = 48;
+  static const int FRAME_HEIGHT = 48;
+  static const float DURACION_FRAME;
+  int frameX;
+  int frameY;
+  float tiempoAcumulado;
+  sf::IntRect rectFrame;
+  std::pair<int, int> inicioBloque;  // primer frame del bloque actual
+
+  void inicializarPreguntas();
+  void procesarRespuesta(char tecla);
+  void setFrame(int fila, int columna);
+
+  void handleInput(float dt) override;
+  void update(float dt) override;
+
+ public:
+  CalderoScene(sf::RenderWindow& window, int& vidasJugador,
+      std::vector<std::string> categoriasRestantes = {},
+      int totalPreguntas = 5);
+  ~CalderoScene();
+
+  void draw(sf::RenderWindow& window) override;
+  bool wantsToChangeScene() const override;
+  Scene* nextScene(sf::RenderWindow& window, int& vidasJugador) override;
+  bool isFinished() const;
+  bool playerWon() const;
 };

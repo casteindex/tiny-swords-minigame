@@ -1,11 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <memory>
 
 class Jugador {
  private:
-  std::unique_ptr<sf::Sprite> sprite;
+  sf::Sprite* sprite;
   sf::Texture textureIdle;
   sf::Texture textureWalk;
 
@@ -23,9 +22,12 @@ class Jugador {
 
  public:
   Jugador(float scale = 1.0f);
+  ~Jugador();
 
+  sf::FloatRect getGlobalBounds() const;
   void setPosition(float x, float y);
   void setScale(float factor);
+  void setTextures(const std::string& idlePath, const std::string& walkPath);
   void handleInput(float deltaTime);
   void update(float deltaTime);
   void draw(sf::RenderWindow& window);

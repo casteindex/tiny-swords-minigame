@@ -1,15 +1,19 @@
 #include "Jugador.h"
 
-#include <iostream>
-
 Jugador::Jugador(float scale)
-    : frameTime(0.1f), currentTime(0.f), currentFrame(0), totalFrames(8),
-      isWalking(false), facingRight(true), scaleFactor(scale), speed(350.f) {
+    : frameTime(0.1f),
+      currentTime(0.f),
+      currentFrame(0),
+      totalFrames(8),
+      isWalking(false),
+      facingRight(true),
+      scaleFactor(scale),
+      speed(350.f) {
   // Cargar texturas y validar carga
-  if (!textureIdle.loadFromFile("assets/player/idle.png"))
-    std::cerr << "No se pudo cargar el idle.png del player\n";
-  if (!textureWalk.loadFromFile("assets/player/walk.png"))
-    std::cerr << "No se pudo cargar el walk.png del player\n";
+  // clang-format off
+  if (!textureIdle.loadFromFile("assets/player/idle.png"));
+  if (!textureWalk.loadFromFile("assets/player/walk.png"));
+  // clang-format on
 
   totalFrames = 8;  // idle tiene 8 frames
   int frameWidth = textureIdle.getSize().x / totalFrames;
@@ -18,11 +22,19 @@ Jugador::Jugador(float scale)
   frameRect = {{0, 0}, {frameWidth, frameHeight}};
 
   // Crear sprite con la textura idle y rect inicial
-  sprite = std::make_unique<sf::Sprite>(textureIdle, frameRect);
+  sprite = new sf::Sprite(textureIdle, frameRect);
   sprite->setScale({scaleFactor, scaleFactor});
 
   // Centrar origen para reflejar sin mover sprite
   sprite->setOrigin({frameWidth / 2.f, frameHeight / 2.f});
+}
+
+Jugador::~Jugador() {
+  delete sprite;
+}
+
+sf::FloatRect Jugador::getGlobalBounds() const {
+  return sprite->getGlobalBounds();
 }
 
 void Jugador::setPosition(float x, float y) {
@@ -32,6 +44,24 @@ void Jugador::setPosition(float x, float y) {
 void Jugador::setScale(float factor) {
   scaleFactor = factor;
   sprite->setScale({facingRight ? factor : -factor, factor});
+}
+
+void Jugador::setTextures(
+    const std::string& idlePath, const std::string& walkPath) {
+  // clang-format off
+  if (!textureIdle.loadFromFile(idlePath));
+  if (!textureWalk.loadFromFile(walkPath));
+  // clang-format on
+
+  // reiniciar el sprite con la textura idle por defecto
+  sprite->setTexture(textureIdle, true);
+
+  // ajustar el tamaño de frame al nuevo spritesheet
+  totalFrames = 8;  // se asume que tiene 8 igual que el original
+  int frameWidth = textureIdle.getSize().x / totalFrames;
+  int frameHeight = textureIdle.getSize().y;
+  frameRect = {{0, 0}, {frameWidth, frameHeight}};
+  sprite->setTextureRect(frameRect);
 }
 
 void Jugador::handleInput(float deltaTime) {

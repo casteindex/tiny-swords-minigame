@@ -36,6 +36,18 @@
     <ClCompile Include="CalderoScene.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="LibroScene.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="IglesiaScene.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="BatallaFinalScene.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jugador.h">
@@ -59,10 +71,16 @@
     <ClInclude Include="CalderoScene.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Assets.h">
+    <ClInclude Include="LibroScene.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="ColasPreguntas.h">
+    <ClInclude Include="IglesiaScene.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="BatallaFinalScene.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
