@@ -4,6 +4,7 @@
 #include "CalderoScene.h"
 #include "EspadaScene.h"
 #include "IglesiaScene.h"
+#include "IntroScene.h"
 #include "LibroScene.h"
 #include "RuletaScene.h"
 #include "Scene.h"
@@ -35,9 +36,10 @@ int main() {
 
   // Escena inicial
   // --- DEBUG ----
-  vidas = 4;
-  Scene* currentScene = new BatallaFinalScene(window, vidas);
+  // vidas = 4;
+  // Scene* currentScene = new BatallaFinalScene(window, vidas);
   // Scene* currentScene = new RuletaScene(window, vidas);
+  Scene* currentScene = new IntroScene(window, vidas);
 
   while (window.isOpen()) {
     while (const std::optional event = window.pollEvent()) {

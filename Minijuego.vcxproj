@@ -134,6 +134,7 @@
     <ClCompile Include="EdificioScene.cpp" />
     <ClCompile Include="EscenaEspada.cpp" />
     <ClCompile Include="IglesiaScene.cpp" />
+    <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="Jugador.cpp" />
     <ClCompile Include="LibroScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="CalderoScene.h" />
     <ClInclude Include="EdificioScene.h" />
     <ClInclude Include="EspadaScene.h" />
+    <ClInclude Include="IntroScene.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="IglesiaScene.h" />
     <ClInclude Include="Jugador.h" />
