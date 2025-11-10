@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "AulaScene.h"
 #include "Jugador.h"
 #include "Scene.h"
 

@@ -1,8 +1,5 @@
 ﻿#include "EdificioScene.h"
 
-#include "CalderoScene.h"
-#include "EspadaScene.h"
-
 EdificioScene::EdificioScene(
     sf::RenderWindow& window, Jugador* jugadorExistente)
     : jugador(jugadorExistente), cambiarEscena(false), opcionDestino(-1) {
@@ -46,6 +43,6 @@ bool EdificioScene::wantsToChangeScene() const {
 
 Scene* EdificioScene::nextScene(sf::RenderWindow& window, int& vidasJugador) {
   if (opcionDestino == 0) {
-    return new CalderoScene(window, vidasJugador);
-  } else return new EspadaScene(window, vidasJugador);
+    return new AulaScene(window, jugador);
+  } else return new AulaScene(window, jugador);  // TODO: laboratorio
 }

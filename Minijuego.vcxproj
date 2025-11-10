@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AulaScene.cpp" />
     <ClCompile Include="BatallaFinalScene.cpp" />
     <ClCompile Include="CalderoScene.cpp" />
     <ClCompile Include="EdificioScene.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="NPC.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AulaScene.h" />
     <ClInclude Include="BatallaFinalScene.h" />
     <ClInclude Include="CalderoScene.h" />
     <ClInclude Include="EdificioScene.h" />

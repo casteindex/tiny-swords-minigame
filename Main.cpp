@@ -1,10 +1,12 @@
 ﻿#include <SFML/Graphics.hpp>
 
+#include "AulaScene.h"
 #include "BatallaFinalScene.h"
 #include "CalderoScene.h"
 #include "EspadaScene.h"
 #include "IglesiaScene.h"
 #include "IntroScene.h"
+#include "Jugador.h"
 #include "LibroScene.h"
 #include "RuletaScene.h"
 #include "Scene.h"
@@ -35,10 +37,8 @@ int main() {
   }
 
   // Escena inicial
-  // --- DEBUG ----
-  // vidas = 4;
-  // Scene* currentScene = new BatallaFinalScene(window, vidas);
-  // Scene* currentScene = new RuletaScene(window, vidas);
+  // Jugador* jugador = new Jugador(3.f);
+  // Scene* currentScene = new AulaScene(window, jugador);
   Scene* currentScene = new IntroScene(window, vidas);
 
   while (window.isOpen()) {
