@@ -8,6 +8,10 @@ Jugador::Jugador(float scale)
       isWalking(false),
       facingRight(true),
       scaleFactor(scale),
+      minX(0.f),
+      maxX(0.f),
+      reachedLeft(false),
+      reachedRight(false),
       speed(350.f) {
   // Cargar texturas y validar carga
   // clang-format off
@@ -108,4 +112,19 @@ void Jugador::update(float deltaTime) {
 
 void Jugador::draw(sf::RenderWindow& window) {
   window.draw(*sprite);
+}
+
+void Jugador::setMovementBounds(float left, float right) {
+  minX = left;
+  maxX = right;
+}
+
+bool Jugador::hasReachedLeft() const {
+  float x = sprite->getPosition().x;
+  return x <= minX;
+}
+
+bool Jugador::hasReachedRight() const {
+  float x = sprite->getPosition().x;
+  return x >= maxX;
 }

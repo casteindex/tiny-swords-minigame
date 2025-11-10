@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="BatallaFinalScene.cpp" />
     <ClCompile Include="CalderoScene.cpp" />
+    <ClCompile Include="EdificioScene.cpp" />
     <ClCompile Include="EscenaEspada.cpp" />
     <ClCompile Include="IglesiaScene.cpp" />
     <ClCompile Include="Jugador.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="BatallaFinalScene.h" />
     <ClInclude Include="CalderoScene.h" />
+    <ClInclude Include="EdificioScene.h" />
     <ClInclude Include="EspadaScene.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="IglesiaScene.h" />

@@ -9,7 +9,6 @@ static const float DISTANCIA_ENTRE_OPCIONES = 40.f;
 BatallaFinalScene::BatallaFinalScene(
     sf::RenderWindow& windowRef, int& vidasJugador, bool esEmpirista)
     : window(windowRef),
-      jugador(3.0f),
       esEmpirista(esEmpirista),
       vidasJugador(vidasJugador),
       vidasNPC(4),
@@ -31,10 +30,11 @@ BatallaFinalScene::BatallaFinalScene(
   spriteFondo = new sf::Sprite(fondoTexture);
   spriteFondo->setPosition({0.f, 0.f});
 
+  jugador = new Jugador(3.0f);
   // --- cambiar textura del jugador (color de ropa)
-  if (esEmpirista) jugador.setTextures("assets/player/idle_empirista.png", "assets/player/walk_empirista.png");
-  else jugador.setTextures("assets/player/idle_racionalista.png", "assets/player/walk_racionalista.png");
-  jugador.setPosition(POS_JUGADOR.x, POS_JUGADOR.y);
+  if (esEmpirista) jugador->setTextures("assets/player/idle_empirista.png", "assets/player/walk_empirista.png");
+  else jugador->setTextures("assets/player/idle_racionalista.png", "assets/player/walk_racionalista.png");
+  jugador->setPosition(POS_JUGADOR.x, POS_JUGADOR.y);
   
   // --- elegir textura del npc (color de ropa)
   if(esEmpirista) npc = new NPC("assets/npc/npc_racionalista.png", 3.0f, true);
@@ -78,7 +78,7 @@ void BatallaFinalScene::inicializarPreguntas() {
 void BatallaFinalScene::handleInput(float deltaTime) {
   if (terminado) return;
 
-  jugador.handleInput(deltaTime);
+  jugador->handleInput(deltaTime);
 
   bool a = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
   bool b = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B);
@@ -163,7 +163,7 @@ void BatallaFinalScene::lanzarRayo(bool sobreJugador) {
 
   sf::Vector2f pos;
   if (sobreJugador) {
-    auto bbox = jugador.getGlobalBounds();
+    auto bbox = jugador->getGlobalBounds();
     pos = {bbox.position.x + bbox.size.x * 0.5f, bbox.position.y - 40.f};
   } else {
     auto bbox = npc->getGlobalBounds();
@@ -173,7 +173,7 @@ void BatallaFinalScene::lanzarRayo(bool sobreJugador) {
 }
 
 void BatallaFinalScene::update(float deltaTime) {
-  jugador.update(deltaTime);
+  jugador->update(deltaTime);
   npc->update(deltaTime);
 
   if (mostrandoRayo && spriteRayo) {
@@ -198,7 +198,7 @@ void BatallaFinalScene::update(float deltaTime) {
 
 void BatallaFinalScene::draw(sf::RenderWindow& window) {
   if (spriteFondo) window.draw(*spriteFondo);
-  jugador.draw(window);
+  jugador->draw(window);
   if (npc) npc->draw(window);
   for (auto& heart : heartsNPC) window.draw(*heart);
   if (mostrandoRayo && spriteRayo) window.draw(*spriteRayo);
@@ -253,5 +253,5 @@ Scene* BatallaFinalScene::nextScene(
     window.close();
     return nullptr;
   }
-  return new RuletaScene(window, vidasJugador);  // TODO: cambiar esto
+  return new EdificioScene(window, jugador);
 }

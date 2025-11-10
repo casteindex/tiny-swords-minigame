@@ -19,6 +19,8 @@ class Jugador {
 
   float scaleFactor;
   float speed;
+  float minX, maxX;
+  bool reachedLeft, reachedRight;
 
  public:
   Jugador(float scale = 1.0f);
@@ -31,4 +33,8 @@ class Jugador {
   void handleInput(float deltaTime);
   void update(float deltaTime);
   void draw(sf::RenderWindow& window);
+
+  void setMovementBounds(float left, float right);
+  bool hasReachedLeft() const;
+  bool hasReachedRight() const;
 };

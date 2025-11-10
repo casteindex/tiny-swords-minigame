@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "EdificioScene.h"
 #include "Jugador.h"
 #include "NPC.h"
 #include "Pregunta.h"
@@ -24,7 +25,7 @@ class BatallaFinalScene : public Scene {
   sf::Texture fondoTexture;
   sf::Sprite* spriteFondo;
 
-  Jugador jugador;
+  Jugador* jugador;
   NPC* npc;
   sf::Texture texHeartsNPC;
   std::vector<sf::Sprite*> heartsNPC;
